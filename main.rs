@@ -12,10 +12,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
     let configuration = get_configuration().expect("Failed to read configuration.");
-    let connection_pool = PgPool::connect_lazy(&configuration.database.connection_string())
+    let connection_pool = PgPool::connect_lazy(&configuration.connection_string())
         .expect("Failed to connect to Postgres.");
 
     run(day_info, "Remember".to_string(), connection_pool).await?;
     Ok(())
 }
-

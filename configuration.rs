@@ -1,13 +1,6 @@
 use config::{self, Config, Environment};
 use dotenv::dotenv;
 use serde::Deserialize;
-use std::env;
-
-#[derive(Deserialize, Debug)]
-pub struct Settings {
-    pub database: DatabaseSettings,
-    pub application_port: u16,
-}
 
 #[derive(Deserialize, Debug)]
 pub struct DatabaseSettings {
@@ -33,21 +26,13 @@ impl DatabaseSettings {
     }
 }
 
-pub fn get_configuration() -> Result<Settings, config::ConfigError> {
+pub fn get_configuration() -> Result<DatabaseSettings, config::ConfigError> {
     dotenv().ok();
-    let application_port = env::var("PORT")
-        .expect("No application_port")
-        .parse()
-        .unwrap();
     let db_settings = match get_db_settings() {
         Ok(settings) => settings,
         Err(e) => return Err(e),
     };
-    let settings = Settings {
-        database: db_settings,
-        application_port,
-    };
-    Ok(settings)
+    Ok(db_settings)
 }
 
 pub fn get_db_settings() -> Result<DatabaseSettings, config::ConfigError> {
