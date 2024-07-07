@@ -1,11 +1,12 @@
-use dream::configuration::get_configuration;
+use dream::configuration::*;
 use dream::routes::*;
 use dream::startup::run;
 use env_logger::Env;
 use sqlx::PgPool;
+use std::error::Error;
 
 #[tokio::main]
-async fn main() -> std::io::Result<()> {
+async fn main() -> Result<(), Box<dyn Error>> {
     let file_path = "dream.wiki";
     let day_info = parse_file(file_path)?;
 
@@ -14,5 +15,7 @@ async fn main() -> std::io::Result<()> {
     let connection_pool = PgPool::connect_lazy(&configuration.database.connection_string())
         .expect("Failed to connect to Postgres.");
 
-    run(day_info, "Remember", connection_pool);
+    run(day_info, "Remember".to_string(), connection_pool).await?;
+    Ok(())
 }
+

@@ -1,11 +1,8 @@
-pub struct Task {
-    pub description: String,
-    pub completed: bool,
-}
+use chrono::NaiveDate;
 
 pub struct DayInfo {
     pub day_name: String,
-    pub date: String,
+    pub date: NaiveDate,
     pub rating: i32,
-    pub tasks: Vec<Task>,
+    pub tasks: Vec<String>,
 }

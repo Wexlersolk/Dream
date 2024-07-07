@@ -1,7 +1,8 @@
+use crate::routes::config::DayInfo;
+use chrono::NaiveDate;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
-use crate::routes::config::{DayInfo, Task};
 
 pub fn parse_file(file_path: &str) -> io::Result<DayInfo> {
     let path = Path::new(file_path);
@@ -10,7 +11,6 @@ pub fn parse_file(file_path: &str) -> io::Result<DayInfo> {
 
     let mut lines = reader.lines();
 
-    // Extract the day name
     let day_name = lines
         .next()
         .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "Missing day name"))??
@@ -18,51 +18,45 @@ pub fn parse_file(file_path: &str) -> io::Result<DayInfo> {
         .trim()
         .to_string();
 
-    // Extract the date
-    let date = lines
+    let date_str = lines
         .next()
         .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "Missing date"))??
         .trim()
         .to_string();
 
-    // Extract the rating line
+    println!("Date string: {}", date_str); // Corrected println! statement
+
+    // Parse the date string into a NaiveDate
+    let date = NaiveDate::parse_from_str(&date_str, "%d.%m.%Y").map_err(|e| {
+        io::Error::new(
+            io::ErrorKind::InvalidData,
+            format!("Failed to parse date: {}", e),
+        )
+    })?;
+
     let rating_line = lines
         .next()
         .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "Missing rating line"))??;
 
-    // Parse the rating
     let rating = rating_line
         .replace("+Rating: *", "")
         .replace("*", "")
         .trim()
         .parse::<i32>()
-        .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, format!("Failed to parse rating: {}", e)))?;
+        .map_err(|e| {
+            io::Error::new(
+                io::ErrorKind::InvalidData,
+                format!("Failed to parse rating: {}", e),
+            )
+        })?;
 
-    // Initialize the tasks vector
     let mut tasks = Vec::new();
 
-    // Process remaining lines for tasks
- for line in lines {
+    for line in lines {
         let line = line?;
-        if line.trim().is_empty() {
-            continue;
+        if !line.trim().is_empty() {
+            tasks.push(line.trim().to_string());
         }
-
-        // Store the entire line in the task description
-        let description = line.trim().to_string();
-
-        // Determine if the task is completed based on its content
-        let completed = if description.contains("[X]") {
-            true
-        } else if description.contains("[ ]") {
-            false
-        } else {
-            // Default to false if the status cannot be determined
-            false
-        };        tasks.push(Task {
-            description: description.to_string(),
-            completed,
-        });
     }
 
     Ok(DayInfo {
@@ -72,4 +66,3 @@ pub fn parse_file(file_path: &str) -> io::Result<DayInfo> {
         tasks,
     })
 }
-
