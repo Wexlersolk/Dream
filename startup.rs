@@ -1,3 +1,4 @@
+use crate::create::create;
 use crate::meditations::*;
 use crate::remember::remember;
 use crate::routes::config::DayInfo;
@@ -17,11 +18,11 @@ pub async fn run(
             }
             Meditations::Recall => {
                 println!("Running Recall meditation");
-                // Implement the recall function and call it here
+                // the recall function and call it here
             }
             Meditations::Create => {
                 println!("Running Create meditation");
-                // Implement the create function and call it here
+                create()?;
             }
         },
         Err(e) => {
@@ -30,4 +31,3 @@ pub async fn run(
     }
     Ok(())
 }
-

@@ -15,6 +15,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let connection_pool = PgPool::connect_lazy(&configuration.connection_string())
         .expect("Failed to connect to Postgres.");
 
-    run(day_info, "Remember".to_string(), connection_pool).await?;
+    run(day_info, "Create".to_string(), connection_pool).await?;
     Ok(())
 }
