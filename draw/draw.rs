@@ -9,6 +9,6 @@ pub async fn draw(
     paint: &mut Paint,
     pool: &PgPool,
 ) -> Result<(), Box<dyn Error>> {
-    get_paint(&day_info, days_to_show, paint, pool);
+    get_paint(&day_info, days_to_show, paint, pool).await?;
     Ok(())
 }

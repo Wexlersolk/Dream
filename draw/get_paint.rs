@@ -1,6 +1,5 @@
 use crate::draw::Paint;
 use crate::routes::DayInfo;
-use chrono::NaiveDate;
 use sqlx::postgres::PgPool;
 use sqlx::Error;
 

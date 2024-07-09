@@ -6,6 +6,8 @@ use sqlx::PgPool;
 use std::env;
 use std::error::Error;
 
+use dream::draw::*;
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
@@ -20,8 +22,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let connection_pool = PgPool::connect_lazy(&configuration.connection_string())
         .expect("Failed to connect to Postgres.");
 
+    let mut paint = Paint {
+        date: Vec::new(),
+        rating: Vec::new(),
+    };
+
     run(
         day_info,
+        &mut paint,
         meditation.to_string(),
         days_to_show.to_string(),
         connection_pool,
