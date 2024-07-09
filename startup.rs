@@ -1,4 +1,4 @@
-use crate::create::create;
+use crate::draw::*;
 use crate::meditations::*;
 use crate::remember::remember;
 use crate::routes::config::DayInfo;
@@ -7,7 +7,9 @@ use std::error::Error;
 
 pub async fn run(
     day_info: DayInfo,
+    paint: &mut Paint,
     meditation: String,
+    days_to_show: String,
     db_pool: PgPool,
 ) -> Result<(), Box<dyn Error>> {
     match parse_meditation(&meditation) {
@@ -18,11 +20,10 @@ pub async fn run(
             }
             Meditations::Recall => {
                 println!("Running Recall meditation");
-                // the recall function and call it here
             }
             Meditations::Create => {
                 println!("Running Create meditation");
-                create()?;
+                draw(&day_info, 10, paint, &db_pool).await?;
             }
         },
         Err(e) => {

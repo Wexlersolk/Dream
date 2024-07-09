@@ -17,4 +17,3 @@ pub async fn remember(day_info: &DayInfo, pool: &PgPool) -> Result<(), Error> {
     .await?;
     Ok(())
 }
-
